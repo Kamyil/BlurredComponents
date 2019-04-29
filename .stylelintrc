@@ -1,0 +1,13 @@
+{
+  "plugins": [
+    "stylelint-scss"
+  ],
+  "rules": {
+    "scss/selector-no-redundant-nesting-selector": true,
+    "no-duplicate-dollar-variables": true,
+    "at-if-closing-brace-space-after": true,
+    "at-import-no-partial-leading-underscore": true,
+    "at-mixin-parentheses-space-before": true,
+    "dollar-variable-colon-space-after": true
+  }
+}

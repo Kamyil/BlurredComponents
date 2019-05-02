@@ -2,12 +2,36 @@
   "plugins": [
     "stylelint-scss"
   ],
+  "syntax": "scss",
   "rules": {
+    "block-no-empty": true,
+    "color-no-invalid-hex": true,
+    "comment-empty-line-before": [ "always", {
+      "ignore": ["stylelint-commands", "after-comment"]
+    }],
+    "indentation": "tab",
+    "max-empty-lines": 2,
+    "color-hex-case": "upper",
+    "declaration-colon-space-after": "always",
+    "block-opening-brace-newline-after": "always",
+    "length-zero-no-unit": true,
+    "declaration-bang-space-after": "always",
+    "property-case": "lower",
+    "font-family-name-quotes": "always-unless-keyword",
+    "font-weight-notation": "numeric",
+    "shorthand-property-no-redundant-values": true,
+    "unit-no-unknown": true,
+    "property-no-unknown": true,
+    "selector-attribute-brackets-space-inside": "never",
+    "selector-type-case": "lower",
     "scss/selector-no-redundant-nesting-selector": true,
-    "no-duplicate-dollar-variables": true,
-    "at-if-closing-brace-space-after": true,
-    "at-import-no-partial-leading-underscore": true,
-    "at-mixin-parentheses-space-before": true,
-    "dollar-variable-colon-space-after": true
+    "scss/at-if-closing-brace-newline-after": "always-last-in-chain",
+    "scss/at-else-closing-brace-newline-after": "always-last-in-chain",
+    "scss/at-import-no-partial-leading-underscore": true,
+    "scss/no-duplicate-dollar-variables": true,
+    "scss/selector-nest-combinators": "always",
+    "scss/double-slash-comment-inline": "never",
+    "scss/at-mixin-parentheses-space-before": "never",
+    "scss/at-mixin-named-arguments": "never"
   }
 }

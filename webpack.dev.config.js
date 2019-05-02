@@ -3,11 +3,20 @@ const webpack = require('webpack');
 const {CheckerPlugin} = require('awesome-typescript-loader');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
+
+function srcPath(subdir) {
+    return path.join(__dirname, "src", subdir);
+}
 
 module.exports = {
     mode: 'development',
+    watch: true,
     devtool: 'source-map',
-    entry: ['./src/typescript/main.ts', './src/scss/main.scss'],
+    entry: [
+        './src/typescript/main.ts',
+        './src/scss/main.scss',
+    ],
     optimization: {
         splitChunks: {
             cacheGroups: {
@@ -20,7 +29,7 @@ module.exports = {
             }
         }
     },
-    stats: { children: false },
+    stats: { children: true },
     plugins: [
         new MiniCssExtractPlugin({
             filename: "css/style.css",
@@ -30,22 +39,33 @@ module.exports = {
         }),
         new CheckerPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
+        new BrowserSyncPlugin({
+            // browse to http://localhost:3000/ during development,
+            // ./public directory is being served
+            host: 'localhost',
+            port: 9000,
+            server: { baseDir: ['dist'] }
+        })
+        // new CopyWebpackPlugin([
+        //     {from: './src/assets', to: 'assets'}
+        // ]),
     ],
     resolve: {
         extensions: ['.ts', '.js', '.css', '.scss'],
         modules: ["node_modules"],
         alias: {
             components: path.join(__dirname, "src/typescript/components"),
-            utils: path.join(__dirname, "src/typescript/utils"),
-            interfaces: path.join(__dirname, "src/typescript/interfaces"),
-            tests: path.join(__dirname, "src/typescript/tests"),
         },
     },
     output: {
         filename: 'js/bundle.js',
-        path: path.resolve(__dirname, 'dist/'),
-        publicPath: '/dist/',
+        path: path.resolve(__dirname, 'dist'),
+        publicPath: './dist/',
         pathinfo: true
+    },
+    watchOptions: {
+        aggregateTimeout: 300,
+        poll: 1000
     },
     module: {
         rules: [
@@ -60,7 +80,36 @@ module.exports = {
                     }
                 },
             },
-
+            {
+                test: /\.(jpg|jpeg|gif|png|svg)$/,
+                use: {
+                    loader: 'url-loader',
+                    options: {
+                        name: 'assets/images/[name].[ext]',
+                        limit: 1024,
+                    },
+                },
+            },
+            {
+                test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                use: {
+                    loader: 'url-loader',
+                    options: {
+                        name: 'assets/fonts/[name].[ext]',
+                        limit: 1024,
+                    },
+                },
+            },
+            {
+                test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                use: {
+                    loader: 'file-loader',
+                    options: {
+                        name: 'assets/fonts/[name].[ext]',
+                        limit: 1024,
+                    },
+                }
+            },
             {
                 test: /\.js$/,
                 include: [
@@ -78,7 +127,7 @@ module.exports = {
                         loader: 'awesome-typescript-loader',
                         options: {
                             configFileName: path.resolve(__dirname, 'tsconfig.json'),
-                            declaration: true,
+                            declaration: false,
                             useBabel: true,
                             useCache: true,
                             babelCore: "@babel/core",
@@ -90,18 +139,34 @@ module.exports = {
             {
                 test: /\.(scss)$/,
                 use: [
-                    MiniCssExtractPlugin.loader,
-                    "css-loader",
-                    {loader: "postcss-loader", options: {sourceMap: 'inline'}},
-                    {loader: "fast-sass-loader",
+                    {
+                        loader: MiniCssExtractPlugin.loader,
                         options: {
-                            includePaths: ['./src/scss/', './node_modules'],
-                            // outputStyle: 'expanded'
-                        }
+                            hmr: true,
+                            reloadAll: true,
+                        },
                     },
-                    'resolve-url-loader'
-                ]
-            }
+                    'css-loader',
+                    'postcss-loader',
+                    'sass-loader',
+                ],
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            // only enable hot in development
+                            hmr: true,
+                            // if hmr does not work, this is a forceful method.
+                            reloadAll: true,
+                        },
+                    },
+                    'css-loader',
+                ],
+            },
         ]
-    }
+
+    },
 };

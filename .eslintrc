@@ -1,0 +1,22 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "globals": {
+    "window": true,
+    "document": true
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["./resources"],
+        "extensions": [".ts"]
+      }
+    }
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ]
+}
